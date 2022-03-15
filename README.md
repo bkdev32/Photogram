@@ -35,6 +35,5 @@ Once the setup is completed, you will need to create a Firestore database and se
 
 =====================
 
-<a target="_blank" href="https://icons8.com/icon/111399/list">List</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 
 
