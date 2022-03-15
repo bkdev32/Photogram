@@ -15,9 +15,6 @@ class FeedViewController: UITableViewController {
     var photos = [Photo]()
     let session = Session()
     
-    let notClicked = UIImage(systemName: "hand.thumbsup")
-    let clicked = UIImage(systemName: "hand.thumbsup.fill")
-    
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController!.navigationItem.hidesBackButton = true
     }
@@ -44,24 +41,15 @@ extension FeedViewController {
         cell.postTitle.text = photo.postTitle
         cell.likeCount.text = String(photo.likes)
         
-        let currentUser = session.user?.uid
-        db.collection("Posts").document(cell.postID.text!).getDocument { query, err in
-            if let likeArray = query?.get(P.Fire.likers) as? [String] {
-                for user in likeArray {
-                    if user == currentUser {
-                        cell.likeBttn.setImage(self.clicked, for: .normal)
-                        cell.likeBttn.isEnabled = false
-                    } else {
-                        cell.likeBttn.setImage(self.notClicked, for: .normal)
-                        cell.likeBttn.isEnabled = true
-                    }
-                }
-            }
+        if photo.likedByUser {
+            cell.likeBttn.setImage(P.General.likeClicked, for: .normal)
         }
         return cell
     }
     
     func fetchPosts() {
+        guard let currentUser = session.user?.uid else { return }
+        
         db.collection(P.Fire.collection)
             .order(by: P.Fire.date, descending: true)
             .addSnapshotListener { [self] query, err in
@@ -78,11 +66,15 @@ extension FeedViewController {
                                let title = doc.get(P.Fire.postTitle) as? String,
                                let postedBy = doc.get(P.Fire.postedBy) as? String,
                                let date = doc.get(P.Fire.date) as? NSObject,
-                               let likes = doc.get(P.Fire.likes) as? Int
-                            {
+                               let likes = doc.get(P.Fire.likes) as? Int,
+                               let array = doc.get(P.Fire.likers) as? [String] {
+                                var didLikePost = false
+                                if array.contains(currentUser) {
+                                    didLikePost = true
+                                }
                                 let photo = Photo(
                                     id: id, imageUrl: image, postedBy: postedBy,
-                                    postTitle: title, date: date, likes: likes)
+                                    postTitle: title, date: date, likes: likes, likedByUser: didLikePost)
                                 photos.append(photo)
                             }
                         }

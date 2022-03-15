@@ -15,6 +15,8 @@ class Session {
     let db = Firestore.firestore()
     let userDefaults = UserDefaults.standard
     var handle: AuthStateDidChangeListenerHandle?
+    let notClicked = UIImage(systemName: "hand.thumbsup")
+    let clicked = UIImage(systemName: "hand.thumbsup.fill")
     
     func signIn(_ email: String, _ password: String, handler: @escaping AuthDataResultCallback) {
         if userDefaults.string(forKey: "email") != nil {
@@ -69,4 +71,5 @@ class Session {
             }
         }
     }
+    
 }

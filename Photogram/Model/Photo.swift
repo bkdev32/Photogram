@@ -14,4 +14,7 @@ struct Photo {
     let postTitle: String
     let date: NSObject
     let likes: Int
+    let likedByUser: Bool
 }
+
+

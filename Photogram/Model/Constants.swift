@@ -19,6 +19,7 @@ enum P {
     enum General {
         public static let cell = "FeedCell"
         public static let chooseImage = UIImage(named: "select-image")
+        public static let likeClicked = UIImage(systemName: "hand.thumbsup.fill")
     }
     enum Fire {
         public static let collection = "Posts"
